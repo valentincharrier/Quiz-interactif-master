@@ -52,7 +52,7 @@ const QUIZ = [
     explanation: "La réception est obligatoire pour TOUTES les entreprises assujetties à la TVA à partir du 1er septembre 2026. L'émission est échelonnée selon la taille de l'entreprise."
   },
   {
-    q: "Quels sont les différents secteurs présents à l'INSECO ?",
+    q: "Quels sont les différents secteurs présents à l'Inseco ?",
     multi: true,
     options: [
       "Logiciels et formation",
@@ -62,10 +62,10 @@ const QUIZ = [
       "Installation des logiciels",
       "Vente des logiciels",
       "Recrutement de comptables externes",
-      "Planification de la facturation"
+      "Hébergement de serveurs cloud"
     ],
-    correct: [0, 2, 4, 5, 7],
-    explanation: "Les 5 secteurs de l'INSECO : Logiciels et formation, Assistance téléphonique, Installation, Vente, et Planification de la facturation. Pas de jeux vidéo, pas de cybersécurité offensive ni de recrutement externalisé."
+    correct: [0, 2, 4, 5],
+    explanation: "Les 4 secteurs d'Inseco : Logiciels et formation, Assistance téléphonique, Installation, et Vente. Pas de jeux vidéo, pas de cybersécurité offensive, pas de recrutement externalisé ni d'hébergement cloud."
   },
   {
     q: "Quels sont les différents membres du groupe Altiore MT ?",
@@ -84,7 +84,7 @@ const QUIZ = [
     explanation: "Le groupe Altiore MT réunit 4 entités : Inseco, Teamway, Tdi services et Itstore pro. Les autres sont des grands groupes français du numérique sans lien avec Altiore."
   },
   {
-    q: "Parmi ces plateformes, lesquelles sont agréées et utilisées par l'INSECO ?",
+    q: "Parmi ces plateformes, lesquelles sont agréées et utilisées par l'Inseco ?",
     multi: true,
     options: [
       "Salesforce",
@@ -96,10 +96,10 @@ const QUIZ = [
       "Pennylane"
     ],
     correct: [1, 4],
-    explanation: "Sage et Docuware sont les deux plateformes agréées utilisées par l'INSECO. Les autres existent mais ne sont pas dans le catalogue INSECO."
+    explanation: "Sage et Docuware sont les deux plateformes agréées utilisées par l'Inseco. Les autres existent mais ne sont pas dans le catalogue Inseco."
   },
   {
-    q: "Quel est le but premier de l'INSECO ?",
+    q: "Quel est le but premier d'Inseco ?",
     options: [
       "Développer des applications mobiles pour les particuliers",
       "Vendre, installer et accompagner les entreprises sur des logiciels de gestion",
@@ -110,22 +110,22 @@ const QUIZ = [
       "Vendre du matériel informatique aux entreprises"
     ],
     correct: [1],
-    explanation: "L'INSECO accompagne les entreprises dans la digitalisation de leur gestion : vente, installation et formation sur des logiciels (Sage, Docuware...)."
+    explanation: "L'Inseco accompagne les entreprises dans la digitalisation de leur gestion : vente, installation et formation sur des logiciels (Sage, Docuware...)."
   },
   {
     q: "Qui est M. OMER ?",
     options: [
       "Comptable à Teamway",
       "Commercial sénior à l'Inseco",
-      "Directeur technique de l'Inseco",
+      "Directeur technique d'Inseco",
       "Directeur des ressources humaines",
       "Fondateur du groupe Altiore MT",
       "Responsable formation",
       "Chef de projet Sage",
-      "PDG de l'Inseco"
+      "PDG d'Inseco"
     ],
     correct: [2],
-    explanation: "M. OMER est le Directeur technique de l'Inseco."
+    explanation: "M. OMER est le Directeur technique d'Inseco."
   },
   {
     q: "En quelle année l'Inseco a-t-elle été créée ?",
@@ -149,12 +149,12 @@ const QUIZ = [
       "Faire le support technique des clients",
       "Encadrer les stagiaires",
       "Former les nouveaux clients à l'utilisation",
-      "Vendre les logiciels aux clients",
+      "Gérer la relation client et vendre les logiciels",
       "Recruter de nouveaux développeurs",
       "Gérer la comptabilité interne du groupe"
     ],
     correct: [4],
-    explanation: "L'objectif principal du commercial est de VENDRE les logiciels (Sage, Docuware...) aux clients. La formation et le support sont assurés par d'autres pôles."
+    explanation: "L'objectif principal du commercial est de GÉRER la relation client et de VENDRE les logiciels (Sage, Docuware...) aux clients. La formation et le support sont assurés par d'autres pôles."
   },
   {
     q: "Qu'est-ce que le localStorage en développement web ?",
@@ -168,10 +168,11 @@ const QUIZ = [
       "Un service de sauvegarde automatique dans le cloud"
     ],
     correct: [2],
-    hint: "Pense à un endroit DANS le navigateur (pas sur un serveur, pas sur le disque dur) où les données restent intactes même après avoir fermé l'onglet ou redémarré le PC.",
+    hint: "Pensez à un endroit DANS le navigateur (pas sur un serveur, pas sur le disque dur) où les données restent intactes même après avoir fermé l'onglet ou redémarré le PC.",
     explanation: "Le localStorage permet de stocker des paires clé/valeur dans le navigateur. Les données restent après fermeture (contrairement au sessionStorage qui, lui, s'efface à la fermeture de l'onglet)."
   },
   {
+    
     q: "Qu'est-ce qu'une API ?",
     options: [
       "Un type de logiciel antivirus",
@@ -458,10 +459,11 @@ function displayQuestion(index) {
   document.getElementById('next-btn').hidden = true;
   document.getElementById('feedback').hidden = true;
 
-  // Bouton Indice : visible uniquement si la question a un champ "hint"
+  // Bouton Indice : visible si la question a un champ "hint",
+  // ou s'il s'agit d'un QCM (indice = nombre de bonnes réponses attendues)
   const hintBtn = document.getElementById('hint-btn');
   const hintCallout = document.getElementById('hint-callout');
-  hintBtn.hidden = !item.hint;
+  hintBtn.hidden = !getHintText(item);
   hintCallout.hidden = true;
 
   lucide.createIcons();
@@ -605,11 +607,23 @@ document.getElementById('start-btn').addEventListener('click', () => {
 document.getElementById('validate-btn').addEventListener('click', validate);
 document.getElementById('next-btn').addEventListener('click', next);
 
+// Renvoie le texte d'indice d'une question (ou null s'il n'y en a pas).
+// Pour un QCM sans indice personnalisé, l'indice est le nombre de bonnes réponses.
+function getHintText(item) {
+  if (item.hint) return item.hint;
+  if (item.multi) {
+    const n = item.correct.length;
+    return `Il y a ${n} bonne${n > 1 ? 's' : ''} réponse${n > 1 ? 's' : ''} à cocher.`;
+  }
+  return null;
+}
+
 // Affiche l'indice de la question courante
 document.getElementById('hint-btn').addEventListener('click', () => {
   const item = QUIZ[currentIndex];
-  if (!item.hint) return;
-  document.getElementById('hint-text').textContent = item.hint;
+  const text = getHintText(item);
+  if (!text) return;
+  document.getElementById('hint-text').textContent = text;
   document.getElementById('hint-callout').hidden = false;
   // L'indice peut être lu plusieurs fois mais on cache le bouton après usage
   document.getElementById('hint-btn').hidden = true;

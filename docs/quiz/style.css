@@ -374,10 +374,19 @@ h1 {
 }
 
 @media (max-width: 600px) {
-  /* Sur mobile, le bouton revient dans le flux pour éviter le chevauchement */
+  /* Sur mobile, les boutons s'empilent en pleine largeur pour ne plus
+     déborder de la carte */
+  .actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .actions .primary-btn {
+    width: 100%;
+    margin: 0;
+  }
   .hint-btn {
     position: static;
-    margin-left: 20px;
+    margin-left: 0;
   }
 }
 
@@ -428,6 +437,22 @@ h1 {
   margin-bottom: 28px;
   color: var(--text-soft);
   line-height: 1.5;
+}
+
+/* Message de remerciement final */
+.thanks-message {
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1.4;
+  color: var(--correct);
+  margin: 0 auto 30px;
+  max-width: 540px;
+  animation: thanks-pop 0.7s ease-out both;
+}
+
+@keyframes thanks-pop {
+  from { opacity: 0; transform: translateY(12px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 /* ============================================

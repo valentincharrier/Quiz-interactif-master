@@ -1881,7 +1881,7 @@ const prevBtn = document.getElementById('punchline-prev');
 const nextBtn = document.getElementById('punchline-next');
 const tabBtns = document.querySelectorAll('.tab-btn');
 
-let currentMode = 'punchline';
+let currentMode = 'question';
 
 // Historique des phrases déjà tirées, par onglet
 // Chaque mode garde sa propre pile + un index pour naviguer dedans
@@ -2235,6 +2235,9 @@ function saveLayout() {
 }
 
 // 3. Drag (depuis n'importe où) + Resize (tous les bords/coins) via interact.js
+// Sur mobile (écran étroit), on désactive le déplacement/redimensionnement :
+// les briques s'empilent en colonne (voir le CSS) et la page scrolle normalement.
+if (window.matchMedia('(min-width: 769px)').matches) {
 interact('.widget')
   .draggable({
     // Les éléments interactifs (champs, boutons, liens...) ne déclenchent pas le drag
@@ -2281,3 +2284,4 @@ interact('.widget')
       })
     ]
   });
+}
