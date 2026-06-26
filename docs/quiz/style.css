@@ -1,0 +1,446 @@
+/* ============================================
+   VARIABLES & RESET
+   ============================================ */
+:root {
+  --bg: #f4f6fb;
+  --card-bg: #ffffff;
+  --text: #1a1a2e;
+  --text-soft: #6b7280;
+  --accent: #6366f1;
+  --accent-hover: #4f46e5;
+  --border: #e5e7eb;
+  --correct: #10b981;
+  --correct-bg: #d1fae5;
+  --wrong: #ef4444;
+  --wrong-bg: #fee2e2;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+[data-lucide] {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  stroke-width: 2;
+}
+
+/* L'attribut hidden doit toujours masquer, même quand on a un display:flex/grid */
+[hidden] {
+  display: none !important;
+}
+
+/* ============================================
+   CARTE PRINCIPALE
+   ============================================ */
+.container {
+  max-width: 640px;
+  width: 100%;
+  background: var(--card-bg);
+  border-radius: 24px;
+  padding: 40px 36px;
+  box-shadow: var(--shadow);
+  /* Position + z-index → la card reste au-dessus du canvas des feux d'artifice */
+  position: relative;
+  z-index: 10;
+  /* Fondu d'apparition (effet de surprise) */
+  transition: opacity 1.8s ease, transform 1.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* État initial : quiz invisible, on attend que l'utilisateur appuie sur Espace */
+body.hidden-start .container {
+  opacity: 0;
+  transform: scale(0.92);
+  pointer-events: none;
+}
+
+/* Indication discrète en bas de l'écran (uniquement quand le quiz est caché) */
+.reveal-hint {
+  position: fixed;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 1.05rem;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  animation: hintPulse 1.8s ease-in-out infinite;
+  z-index: 5;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+
+.reveal-key {
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(4px);
+}
+
+/* Une fois le quiz révélé, on masque l'indication */
+body:not(.hidden-start) .reveal-hint {
+  opacity: 0;
+}
+
+@keyframes hintPulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.screen {
+  display: none;
+}
+
+.screen.active {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   ÉCRANS ACCUEIL & RÉSULTATS
+   ============================================ */
+#welcome,
+#results {
+  text-align: center;
+}
+
+.big-icon {
+  width: 72px;
+  height: 72px;
+  color: var(--accent);
+  margin: 0 auto 20px;
+  display: block;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+
+.description {
+  color: var(--text-soft);
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+
+/* ============================================
+   BOUTONS
+   ============================================ */
+.primary-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 26px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  font-family: inherit;
+}
+
+.primary-btn:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.primary-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.primary-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ============================================
+   PROGRESSION
+   ============================================ */
+.progress-text {
+  text-align: center;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.progress-bar {
+  height: 8px;
+  background: var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+#progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #a78bfa);
+  width: 0;
+  transition: width 0.4s ease;
+}
+
+/* ============================================
+   QUESTION
+   ============================================ */
+#question-text {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.hint [data-lucide] {
+  width: 14px;
+  height: 14px;
+}
+
+/* ============================================
+   OPTIONS
+   ============================================ */
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.95rem;
+  color: var(--text);
+  transition: all 0.2s;
+  font-family: inherit;
+  width: 100%;
+}
+
+.option:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: white;
+}
+
+.option.selected {
+  border-color: var(--accent);
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.option.correct {
+  border-color: var(--correct);
+  background: var(--correct-bg);
+}
+
+.option.wrong {
+  border-color: var(--wrong);
+  background: var(--wrong-bg);
+}
+
+.option:disabled {
+  cursor: default;
+}
+
+.option-marker [data-lucide] {
+  width: 20px;
+  height: 20px;
+  color: var(--text-soft);
+  flex-shrink: 0;
+}
+
+.option.selected .option-marker [data-lucide] {
+  color: var(--accent);
+}
+
+.option.correct .option-marker [data-lucide] {
+  color: var(--correct);
+}
+
+.option.wrong .option-marker [data-lucide] {
+  color: var(--wrong);
+}
+
+.option-text {
+  flex: 1;
+}
+
+/* ============================================
+   ACTIONS
+   ============================================ */
+.actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+/* Bouton Indice — même style que Valider, mais ambre + collé à droite */
+.hint-btn {
+  background: #f59e0b;
+  position: absolute;
+  right: 0;
+}
+
+.hint-btn:hover:not(:disabled) {
+  background: #d97706;
+}
+
+/* Encart d'indice qui s'affiche au-dessus des actions */
+.hint-callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding: 14px 16px;
+  background: #fef3c7;
+  border-left: 4px solid #f59e0b;
+  border-radius: 10px;
+  color: #78350f;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  animation: hintIn 0.35s ease;
+}
+
+.hint-callout [data-lucide] {
+  color: #f59e0b;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+@keyframes hintIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+  /* Sur mobile, le bouton revient dans le flux pour éviter le chevauchement */
+  .hint-btn {
+    position: static;
+    margin-left: 20px;
+  }
+}
+
+/* ============================================
+   FEEDBACK
+   ============================================ */
+.feedback {
+  margin-top: 20px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  border-left: 4px solid;
+  line-height: 1.5;
+}
+
+.feedback.correct {
+  background: var(--correct-bg);
+  border-color: var(--correct);
+}
+
+.feedback.wrong {
+  background: var(--wrong-bg);
+  border-color: var(--wrong);
+}
+
+.feedback strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 1.05rem;
+}
+
+/* ============================================
+   RÉSULTATS
+   ============================================ */
+.score-display {
+  font-size: 1.5rem;
+  color: var(--text-soft);
+  margin: 24px 0 8px;
+}
+
+.score-display strong {
+  font-size: 4rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.score-message {
+  font-size: 1.05rem;
+  margin-bottom: 28px;
+  color: var(--text-soft);
+  line-height: 1.5;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 600px) {
+  .container {
+    padding: 28px 22px;
+  }
+  h1 {
+    font-size: 1.6rem;
+  }
+  #question-text {
+    font-size: 1.15rem;
+  }
+}

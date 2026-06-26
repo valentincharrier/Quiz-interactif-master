@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz Stage — INSECO & Maison Graciet</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="hidden-start">
+  <div class="reveal-hint" id="reveal-hint">
+    <kbd class="reveal-key">Espace</kbd>
+    <span>pour révéler le quiz</span>
+  </div>
+
+  <main class="container">
+
+    <!-- 1. Écran d'accueil -->
+    <section id="welcome" class="screen active">
+
+      
+      <i data-lucide="brain-circuit" class="big-icon"></i>
+      <h1>Quiz de stage</h1>
+      <p class="subtitle">INSECO & Maison Graciet</p>
+      <p class="description">
+        12 questions pour tester vos connaissances et trouver les petits malins qui n'ont rien écouté ! 
+      </p>
+      <button id="start-btn" class="primary-btn">
+        <i data-lucide="play"></i> Commencer
+      </button>
+    </section>
+
+    <!-- 2. Écran question -->
+    <section id="question" class="screen">
+      <div class="progress-text">
+        Question <span id="q-num">1</span> / <span id="q-total">12</span>
+      </div>
+      <div class="progress-bar"><div id="progress-fill"></div></div>
+
+      <h2 id="question-text"></h2>
+      <p id="question-hint" class="hint" hidden>
+        <i data-lucide="info"></i> Plusieurs réponses possibles
+      </p>
+
+      <div id="options-list" class="options"></div>
+
+      <div id="hint-callout" class="hint-callout" hidden>
+        <i data-lucide="lightbulb"></i>
+        <span id="hint-text"></span>
+      </div>
+
+      <div class="actions">
+        <button id="validate-btn" class="primary-btn" disabled>
+          <i data-lucide="check"></i> Valider
+        </button>
+        <button id="next-btn" class="primary-btn" hidden>
+          Suivante <i data-lucide="arrow-right"></i>
+        </button>
+        <button id="hint-btn" class="primary-btn hint-btn" hidden>
+          <i data-lucide="lightbulb"></i> Indice
+        </button>
+      </div>
+
+      <div id="feedback" class="feedback" hidden></div>
+    </section>
+
+    <!-- 3. Écran résultats -->
+    <section id="results" class="screen">
+      <i data-lucide="trophy" class="big-icon"></i>
+      <h1>Résultats</h1>
+      <div id="score-display" class="score-display"></div>
+      <p id="score-message" class="score-message"></p>
+      <button id="restart-btn" class="primary-btn">
+        <i data-lucide="rotate-ccw"></i> Recommencer
+      </button>
+    </section>
+
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

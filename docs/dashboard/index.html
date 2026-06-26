@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mon Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Icônes Lucide (https://lucide.dev) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Interact.js : drag & resize libre (https://interactjs.io) -->
+  <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+</head>
+<body>
+
+  <!-- En-tête : message + horloge + bouton thème -->
+  <header class="header">
+    <div>
+      <h1 id="greeting">
+        <span id="greeting-text">Bonjour</span>
+        <i id="greeting-icon" data-lucide="sun"></i>
+      </h1>
+      <p id="date-text" class="date-text"></p>
+    </div>
+    <div class="header-right">
+      <div id="clock" class="clock">--:--:--</div>
+      <button id="theme-toggle" class="theme-btn" title="Changer de thème">
+        <i data-lucide="moon"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Astuce drag & drop -->
+  <p class="drag-hint">
+    <i data-lucide="move"></i>
+    Astuce : déplace une brique en la saisissant n'importe où — étire-la depuis ses bords ou ses coins.
+  </p>
+
+  <!-- Grille principale des widgets (sortable) -->
+  <main id="grid" class="grid">
+
+    <!-- Widget : To-do list -->
+    <section class="widget" data-id="todos">
+      <h2 class="widget-handle"><i data-lucide="check-square"></i> À faire</h2>
+      <form id="todo-form" class="todo-form">
+        <input type="text" id="todo-input" placeholder="Ajouter une tâche..." maxlength="80" />
+        <button type="submit" title="Ajouter">
+          <i data-lucide="plus"></i>
+        </button>
+      </form>
+      <ul id="todo-list" class="todo-list"></ul>
+    </section>
+
+    <!-- Widget : Météo -->
+    <section class="widget" data-id="weather">
+      <h2 class="widget-handle"><i data-lucide="cloud-sun"></i> Météo</h2>
+      <form id="city-form" class="city-form">
+        <input type="text" id="city-input" placeholder="Ta ville (ex: Paris)" />
+        <button type="submit">OK</button>
+      </form>
+      <div id="weather" class="weather">
+        <p class="weather-hint">Entre une ville pour voir la météo.</p>
+      </div>
+    </section>
+
+    <!-- Widget : Actualités karaté -->
+    <section class="widget" data-id="news">
+      <h2 class="widget-handle"><i data-lucide="newspaper"></i> Actu Karaté</h2>
+      <div id="news" class="news">
+        <p class="news-hint">Chargement des actualités...</p>
+      </div>
+      <button id="news-refresh" class="small-btn">
+        <i data-lucide="refresh-cw"></i> Actualiser
+      </button>
+    </section>
+
+    <!-- Widget : Actualités foot -->
+    <section class="widget" data-id="news-foot">
+      <h2 class="widget-handle"><i data-lucide="trophy"></i> Actu Foot</h2>
+      <div id="news-foot" class="news">
+        <p class="news-hint">Chargement des actualités...</p>
+      </div>
+      <button id="news-foot-refresh" class="small-btn">
+        <i data-lucide="refresh-cw"></i> Actualiser
+      </button>
+    </section>
+
+    <!-- Widget : Pomodoro -->
+    <section class="widget" data-id="pomodoro">
+      <h2 class="widget-handle"><i data-lucide="timer"></i> Pomodoro</h2>
+      <div id="timer" class="timer">25:00</div>
+      <p id="timer-mode" class="timer-mode">
+        <i data-lucide="book-open"></i> <span>Travail</span>
+      </p>
+      <div class="timer-controls">
+        <button id="timer-start"><i data-lucide="play"></i> Démarrer</button>
+        <button id="timer-reset"><i data-lucide="rotate-ccw"></i> Reset</button>
+      </div>
+      <details class="timer-settings">
+        <summary><i data-lucide="settings"></i> Paramètres</summary>
+        <div class="timer-settings-inner">
+          <label>
+            Travail (min)
+            <input type="number" id="work-input" min="1" max="120" value="25" />
+          </label>
+          <label>
+            Pause (min)
+            <input type="number" id="break-input" min="1" max="60" value="5" />
+          </label>
+          <button id="timer-save" class="small-btn">Enregistrer</button>
+        </div>
+      </details>
+    </section>
+
+    <!-- Widget : Bloc-notes -->
+    <section class="widget" data-id="notes">
+      <h2 class="widget-handle"><i data-lucide="notebook-pen"></i> Bloc-notes</h2>
+      <textarea id="notes" placeholder="Écris ce que tu veux ici..."></textarea>
+    </section>
+
+    <!-- Widget : Punchlines de la bande -->
+    <section class="widget" data-id="punchlines">
+      <h2 class="widget-handle"><i data-lucide="laugh"></i> Punchlines de la bande</h2>
+      <div class="punchline-tabs">
+        <button class="tab-btn active" data-mode="punchline">Affirmations</button>
+        <button class="tab-btn" data-mode="question">Questions</button>
+      </div>
+      <div id="punchline-tags" class="punchline-tags"></div>
+      <blockquote id="punchline" class="punchline">Chargement...</blockquote>
+      <div class="punchline-nav">
+        <button id="punchline-prev" class="small-btn" title="Précédente" disabled>
+          <i data-lucide="chevron-left"></i> Précédente
+        </button>
+        <button id="punchline-next" class="small-btn" title="Suivante">
+          Suivante <i data-lucide="chevron-right"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- Widget : Musique (fichiers locaux + dossiers par artiste) -->
+    <section class="widget" data-id="music">
+      <h2 class="widget-handle"><i data-lucide="music"></i> Musique</h2>
+
+      <div class="music-folder-tabs">
+        <button class="music-tab active" data-folder="GIMS">GIMS</button>
+        <button class="music-tab" data-folder="RAP FR">RAP FR</button>
+        <button class="music-tab" data-folder="SOOLKING">SOOLKING</button>
+      </div>
+
+      <label class="music-upload-btn" for="music-file-input">
+        <i data-lucide="upload"></i>
+        Ajouter dans <strong id="music-current-folder">GIMS</strong>
+      </label>
+      <input type="file" id="music-file-input" accept="audio/*" multiple hidden />
+
+      <div id="music-now-playing" class="music-now-playing" hidden>
+        <div class="music-track-name" id="music-track-name"></div>
+        <audio id="music-audio" controls></audio>
+        <div class="music-speed">
+          <label for="music-speed-select"><i data-lucide="gauge"></i> Vitesse</label>
+          <select id="music-speed-select">
+            <option value="0.5">0.5×</option>
+            <option value="0.75">0.75×</option>
+            <option value="1" selected>1× (normale)</option>
+            <option value="1.25">1.25×</option>
+            <option value="1.5">1.5×</option>
+            <option value="2">2×</option>
+          </select>
+        </div>
+      </div>
+
+      <ul id="music-list" class="music-list"></ul>
+    </section>
+
+    <!-- Widget : Liens favoris -->
+    <section class="widget" data-id="links">
+      <h2 class="widget-handle"><i data-lucide="link"></i> Raccourcis</h2>
+      <div class="links">
+        <a href="https://www.google.com" target="_blank">Google</a>
+        <a href="https://www.youtube.com" target="_blank">YouTube</a>
+        <a href="https://mail.google.com" target="_blank">Gmail</a>
+        <a href="https://www.wikipedia.org" target="_blank">Wikipédia</a>
+        <a href="https://chat.openai.com" target="_blank">ChatGPT</a>
+        <a href="https://gemini.google.com" target="_blank">Gemini</a>
+        <a href="https://web.snapchat.com" target="_blank">Snapchat</a>
+        <a href="https://www.pronote.net" target="_blank">Pronote</a>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

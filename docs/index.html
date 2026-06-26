@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mes projets — Younes</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <main class="landing">
+    <header class="landing-header">
+      <h1>Mes projets web</h1>
+      <p class="subtitle">Deux applications réalisées en HTML / CSS / JavaScript</p>
+    </header>
+
+    <section class="cards">
+      <a href="dashboard/" class="project-card">
+        <div class="card-icon dashboard-icon">
+          <i data-lucide="layout-dashboard"></i>
+        </div>
+        <h2>Dashboard personnel</h2>
+        <p>
+          Tableau de bord modulaire avec horloge, météo, actualités, pomodoro,
+          notes, musique, todo, punchlines et raccourcis — toutes les briques
+          sont déplaçables et redimensionnables.
+        </p>
+        <span class="card-cta">
+          Ouvrir <i data-lucide="arrow-right"></i>
+        </span>
+      </a>
+
+      <a href="quiz/" class="project-card">
+        <div class="card-icon quiz-icon">
+          <i data-lucide="brain-circuit"></i>
+        </div>
+        <h2>Quiz interactif</h2>
+        <p>
+          Quiz de 12 questions sur mon stage à l'INSECO et la journée à
+          Maison Graciet — avec sons, feux d'artifice et indices pour les
+          questions techniques.
+        </p>
+        <span class="card-cta">
+          Ouvrir <i data-lucide="arrow-right"></i>
+        </span>
+      </a>
+    </section>
+
+    <footer class="landing-footer">
+      <p>Projets réalisés par Younes — Seconde</p>
+    </footer>
+  </main>
+  <script>lucide.createIcons();</script>
+</body>
+</html>
